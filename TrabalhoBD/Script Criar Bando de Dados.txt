@@ -1,0 +1,119 @@
+CREATE DATABASE IF NOT EXISTS sistema_vendas;
+USE sistema_vendas;
+
+-- ============================
+--  CLIENTES
+-- ============================
+CREATE TABLE clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(25),
+    endereco VARCHAR(255),
+    data_cadastro DATE
+);
+
+-- ============================
+--  USUARIOS
+-- ============================
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha VARCHAR(100) NOT NULL,
+    data_cadastro DATE
+);
+
+-- ============================
+--  FUNCIONARIOS
+-- ============================
+CREATE TABLE funcionarios (
+    id_funcionario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE,
+    cargo VARCHAR(50),
+    data_admissao DATE,
+    data_inicio_trabalho DATE
+);
+
+-- ============================
+--  PRODUTOS
+-- ============================
+CREATE TABLE produtos (
+    id_produto INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    categoria VARCHAR(50),
+    preco DECIMAL(10,2) NOT NULL,
+    quantidade_em_estoque INT DEFAULT 0,
+    data_cadastro DATE
+);
+
+-- ============================
+--  FORNECEDORES
+-- ============================
+CREATE TABLE fornecedores (
+    id_fornecedor INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    contato VARCHAR(100),
+    endereco VARCHAR(255),
+    data_inicio_contrato DATE
+);
+
+-- ============================
+--  COMPRAS
+-- ============================
+CREATE TABLE compras (
+    id_compra INT AUTO_INCREMENT PRIMARY KEY,
+    id_fornecedor INT,
+    data_compra DATE,
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id_fornecedor)
+);
+
+-- ============================
+--  ITENS_COMPRA
+-- ============================
+CREATE TABLE itens_compra (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_compra INT,
+    id_produto INT,
+    quantidade INT,
+    preco_unitario DECIMAL(10,2),
+    FOREIGN KEY (id_compra) REFERENCES compras(id_compra),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
+-- ============================
+--  VENDAS
+-- ============================
+CREATE TABLE vendas (
+    id_venda INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    id_cliente INT,
+    data_venda DATE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+-- ============================
+--  ITENS_VENDA
+-- ============================
+CREATE TABLE itens_venda (
+    id_item INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT,
+    id_produto INT,
+    quantidade INT,
+    preco_unitario DECIMAL(10,2),
+    FOREIGN KEY (id_venda) REFERENCES vendas(id_venda),
+    FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
+);
+
+-- ============================
+--  FÉRIAS
+-- ============================
+CREATE TABLE ferias (
+    id_ferias INT AUTO_INCREMENT PRIMARY KEY,
+    id_funcionario INT,
+    data_inicio DATE,
+    data_fim DATE,
+    dias_ferias INT,
+    FOREIGN KEY (id_funcionario) REFERENCES funcionarios(id_funcionario)
+);
